@@ -4,7 +4,7 @@
 
 This project aims to recognize gestures using Electromyography (EMG) data through neural networks. EMG measures the electrical activity produced by skeletal muscles and serves as a powerful tool for gesture recognition.
 
-![Neural Network Illustration](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.javatpoint.com%2Fartificial-neural-network&psig=AOvVaw22tfJj-w0vRLcTE77Znelq&ust=1692812503608000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCNipuJHo8IADFQAAAAAdAAAAABAJ)
+![Neural Network Illustration](https://www.datasciencecentral.com/wp-content/uploads/2021/10/2808361999.jpg)
 
 ## Table of Contents
 
