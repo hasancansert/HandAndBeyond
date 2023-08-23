@@ -1,69 +1,102 @@
-# HandAndBeyond
+# EMG Gesture Recognition with Neural Networks
 
-# EMG Gesture Recognition: A Step-by-Step Guide
-
-This repository provides a detailed guide to understanding and implementing gesture recognition using Electromyography (EMG) data with neural networks.
+This repository provides a comprehensive guide to understanding and implementing gesture recognition using Electromyography (EMG) data with neural networks. If you're new to the world of neural networks, you're in the right place! Let's embark on this journey together.
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Libraries and Environment](#libraries-and-environment)
+- [Introduction to Neural Networks](#introduction-to-neural-networks)
 - [Data Loading and Preprocessing](#data-loading-and-preprocessing)
-- [Neural Network Model](#neural-network-model)
-- [Training](#training)
-- [Visualization](#visualization)
+- [Neural Network Model with TensorFlow](#neural-network-model-with-tensorflow)
+- [Training the Neural Network](#training-the-neural-network)
 - [Evaluation and Prediction](#evaluation-and-prediction)
-- [Summary and Further Reading](#summary-and-further-reading)
+- [Visualization](#visualization)
 - [Running the Code](#running-the-code)
 - [Contributing](#contributing)
 - [License](#license)
 
-## Introduction
+## Introduction to Neural Networks
 
-This code aims to recognize gestures using Electromyography (EMG) data. EMG measures electrical activity in response to a nerve's stimulation of muscles. We employ a neural network, a type of machine learning model, to learn patterns from the data and make predictions.
+Neural networks are algorithms designed to recognize patterns. They interpret sensory data through a kind of machine perception, labeling, or clustering raw input. These algorithms somewhat mimic how a human brain operates, hence the name "neural network".
 
-## Libraries and Environment
+### Layers in a Neural Network
 
-We leverage several Python libraries:
-- **Pandas**: For data manipulation and analysis.
-- **TensorFlow**: A library for high-performance numerical computations, perfect for machine learning.
-- **Matplotlib**: For plotting graphs.
-- **NumPy**: For numerical operations.
-- **Scikit-Learn**: For data preprocessing.
+- **Input Layer**: This layer receives your data, akin to presenting an image to your eyes.
+- **Hidden Layers**: These are intermediate layers between input and output, processing data much like the brain does after seeing an image.
+- **Output Layer**: The final layer, which delivers the result, such as your brain identifying that the image you saw was a 'cat'.
 
 ## Data Loading and Preprocessing
 
-**Loading Data**: The dataset is loaded using the `pandas` library. It contains columns representing EMG readings and the corresponding gesture.
+**Code**:
+```python
+df = pd.read_csv(path)
+features = df.drop(columns=["label", "class", "time"]).values
+labels = df["class"].values
+```
 
-**Data Splitting**: Data is split into training and testing sets. The training set helps the model learn, while the testing set evaluates its performance.
+**What's Happening Here?**
+- We're using `pandas`, a library, to read our dataset. 
+- "Features" are the input data (EMG readings), while "labels" are the expected output (gesture type).
 
-**Normalization**: Neural networks perform better when input data are normalized. This step transforms data to have a mean of 0 and a standard deviation of 1.
+## Neural Network Model with TensorFlow
 
-**One-hot Encoding**: Since our labels are categorical, we transform them into a binary matrix format using one-hot encoding.
+TensorFlow lets us define and train neural networks. We use its Keras API for a more straightforward interface.
 
-## Neural Network Model
+**Code**:
+```python
+model = Sequential([
+    layers.Dense(1024, activation='relu', input_shape=(8,)),
+    ...
+    layers.Dense(8, activation='softmax')
+])
+```
 
-**Model Architecture**: The model consists of multiple layers, including dense (or fully connected) layers with the `relu` activation function. The final layer employs the `softmax` activation to output probability distributions over the classes.
+**What's Happening Here?**
+- We're defining a sequential neural network.
+- `Dense` layers are fully interconnected.
+- Activation functions, like `relu` and `softmax`, determine the neuron's output.
 
-**Compilation**: Before training, the model is compiled using the Nadam optimizer and the `categorical_crossentropy` loss function.
+## Training the Neural Network
 
-## Training
+Training is where the neural network "learns" from the data.
 
-The model learns to recognize gestures using the training data. Throughout this process, the model's weights are adjusted to minimize the difference between predicted and actual values.
+**Code**:
+```python
+opt = optimizers.Nadam(lr=1e-3)
+model.compile(optimizer=opt, loss="categorical_crossentropy", metrics=["accuracy"])
+history = model.fit(x_train, y_train, batch_size=512, epochs=10)
+```
 
-## Visualization
-
-The training and validation loss and accuracy are plotted to monitor the model's performance over epochs.
+**What's Happening Here?**
+- We're setting up an optimizer, which adjusts parameters to reduce errors.
+- The loss function measures the prediction errors.
+- `model.fit()` starts the training process.
 
 ## Evaluation and Prediction
 
-**Evaluation**: After training, the model's performance is evaluated using the test data.
+After training, we evaluate the model's performance on unseen data.
 
-**Prediction**: The model predicts the gesture for a specific EMG reading, which is then compared to the actual gesture.
+**Code**:
+```python
+evaluation = model.evaluate(x_test, y_test)
+prediction = np.argmax(model.predict(x_test)[sample_idx])
+```
 
-## Summary and Further Reading
+**What's Happening Here?**
+- We're testing the model's performance.
+- We're also making a prediction on a sample EMG reading.
 
-Through this project, we've demonstrated the power of neural networks in gesture recognition using EMG data. For a deeper dive, consider exploring advanced neural network architectures, regularization techniques, and other optimization methods.
+## Visualization
+
+Visualizations help understand the training process.
+
+**Code**:
+```python
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+```
+
+**What's Happening Here?**
+- We're plotting the training and validation accuracy to see the model's performance over time.
 
 ## Running the Code
 
@@ -73,16 +106,11 @@ To execute the code, navigate to the directory containing the script and run:
 ClassificationV2.py
 ```
 
-Replace `ClassificationV2.py` with the actual name of your script.
-
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
+Pull requests are welcome. For significant changes, please open an issue first to discuss your ideas.
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.md` for more information.
-
----
-
+This project is licensed under the MIT License. See the [LICENSE.md](LICENSE.md) file for details.
 
