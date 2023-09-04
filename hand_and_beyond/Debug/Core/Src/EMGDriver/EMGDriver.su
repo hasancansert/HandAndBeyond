@@ -1,0 +1,2 @@
+../Core/Src/EMGDriver/EMGDriver.c:20:6:EmgTaskFunction	16	static
+../Core/Src/EMGDriver/EMGDriver.c:32:6:EmgTaskInit	24	static

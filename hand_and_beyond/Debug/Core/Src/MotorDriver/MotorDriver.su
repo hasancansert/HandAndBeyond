@@ -1,0 +1,2 @@
+../Core/Src/MotorDriver/MotorDriver.c:20:6:MotorTaskFunction	16	static
+../Core/Src/MotorDriver/MotorDriver.c:32:6:MotorTaskInit	24	static
