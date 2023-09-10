@@ -32,10 +32,10 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Src/EMGDriver \
-Core/Src/MotorDriver \
 Core/Src \
 Core/Startup \
+Drivers/EMGDriver \
+Drivers/MotorDriver \
 Drivers/STM32F4xx_HAL_Driver/Src \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
 Middlewares/Third_Party/FreeRTOS/Source \

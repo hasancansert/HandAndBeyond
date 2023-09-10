@@ -31,6 +31,10 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ErrorTypes.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
+
 
 /* USER CODE END Includes */
 
@@ -73,7 +77,10 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+extern ADC_HandleTypeDef hadc1;
+extern UART_HandleTypeDef huart6;
+extern SemaphoreHandle_t handFlexHandle;
+extern SemaphoreHandle_t handReleaseHandle;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
