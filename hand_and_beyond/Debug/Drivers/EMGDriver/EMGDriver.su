@@ -1,4 +1,4 @@
 ../Drivers/EMGDriver/EMGDriver.c:16:6:EmgConfigInit	24	static
 ../Drivers/EMGDriver/EMGDriver.c:78:6:EmgTaskFunction	24	static
-../Drivers/EMGDriver/EMGDriver.c:136:6:EmgTaskInit	24	static
-../Drivers/EMGDriver/EMGDriver.c:146:6:EmgNotchFilter	32	static
+../Drivers/EMGDriver/EMGDriver.c:137:6:EmgTaskInit	24	static
+../Drivers/EMGDriver/EMGDriver.c:148:6:EmgNotchFilter	32	static

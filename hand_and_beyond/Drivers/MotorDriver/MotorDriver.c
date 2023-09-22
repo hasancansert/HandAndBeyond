@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include "MotorDriver.h"
+#include "PCListener.h"
 
 TaskHandle_t motorTaskHandle;
 
@@ -19,63 +20,23 @@ TaskHandle_t motorTaskHandle;
 /* USER CODE END Header_MotorTask */
 void MotorTaskFunction(void const * argument)
 {
-	uint32_t movement_detect = (uint32_t) argument;
 
-	uint8_t tx_buffer[8];
+	uint32_t hand_position = FIST;
 
-	/*Setting the speed of the servo motors*/
-	int counter = 0;
-	while(counter <= CHANNEL_4){
-		Set_Speed(tx_buffer, counter);
-		HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-		counter++;
-	}
+	set_all_motor_speed(90);
 
 	/* Infinite loop */
 
 	for(;;)
 	{
-//		xSemaphoreTake(handFlexHandle, portMAX_DELAY);
-//		// HAL_UART_Transmit(&huart6, buffer, 5, HAL_MAX_DELAY);
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND FLEXED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND FLEXED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND FLEXED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-//		xSemaphoreTake(handReleaseHandle, portMAX_DELAY);
-//		// HAL_UART_Transmit(&huart6, buffer, 5, HAL_MAX_DELAY);
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND RELEASED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND RELEASED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-//		printf("@@@@@@@@@@@@@@@@@@@@ HAND RELEASED @@@@@@@@@@@@@@@@@@@@@@@@\n");
-
-
-
 
 		xSemaphoreTake(handFlexHandle, portMAX_DELAY);
 
-		switch(movement_detect){
-			case FIST:
-				Fist(tx_buffer);
-				break;
-
-			case OKAY_SIGN:
-				Okay_sign(tx_buffer);
-				break;
-
-			case PEACE_SIGN:
-				Peace_sign(tx_buffer);
-				break;
-
-			case POINTING:
-				Pointing(tx_buffer);
-				break;
-
-			case GOOD_SIGN:
-				Good_sign(tx_buffer);
-				break;
-		}
+		set_hand_position(hand_position);
 
 		xSemaphoreTake(handReleaseHandle, portMAX_DELAY);
-		Release(tx_buffer);
 
+		set_hand_position(OPEN);
 
 	}
 
@@ -92,79 +53,108 @@ void MotorTaskInit(void)
 	  				motorTaskHandle );
 }
 
-void Set_Target(uint8_t *buffer, const uint8_t CHANNEL, uint8_t target_low, uint8_t target_high){
-	buffer[0] = 0x84;
-	buffer[1] = CHANNEL;
-	buffer[2] = target_low;
-	buffer[3] = target_high;
+
+void set_motor_position(uint8_t channel, uint16_t position){
+
+	uint32_t target = 4 * position;
+	uint8_t tx_buffer[MESSAGE_SIZE];
+	tx_buffer[0] = SET_TARGET;
+	tx_buffer[1] = channel;
+	tx_buffer[2] = target & 0x7F;
+	tx_buffer[3] = (target >> 7) & 0x7F;
+	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, HAL_MAX_DELAY);
+
 }
 
-/*Storing the speed to 140us/ms and channel number to a buffer.*/
+void set_motor_speed(uint8_t channel, uint32_t speed){
 
-void Set_Speed(uint8_t *buffer, const uint8_t CHANNEL){
-	buffer[0] = 0x87;
-	buffer[1] = CHANNEL;
-	buffer[2] =	0x0C;
-	buffer[3] = 0x01;
+	uint8_t tx_buffer[MESSAGE_SIZE];
+	tx_buffer[0] = SET_SPEED;
+	tx_buffer[1] = channel;
+	tx_buffer[2] = speed & 0x7F;
+	tx_buffer[3] = (speed >> 7) & 0x7F;
+	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, HAL_MAX_DELAY);
+
 }
+void set_all_motor_speed(uint32_t speed){
 
-void Fist(uint8_t *tx_buffer){
-    Set_Target(tx_buffer, CHANNEL_0, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-  	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-    Set_Target(tx_buffer, CHANNEL_1, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-}
-
-void Okay_sign(uint8_t *tx_buffer){
-    Set_Target(tx_buffer, CHANNEL_1, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
+	set_motor_speed(THUMB_FINGER, speed);
+	set_motor_speed(LITTLE_FINGER, speed);
+	set_motor_speed(RING_FINGER, speed);
+	set_motor_speed(MIDDLE_FINGER, speed);
+	set_motor_speed(INDEX_FINGER, speed);
+	set_motor_speed(WRIST, speed);
 }
 
-void Peace_sign(uint8_t *tx_buffer){
-    Set_Target(tx_buffer, CHANNEL_0, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-  	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
+void set_motor_acceleration(uint8_t channel, uint32_t acceleration){
+
+	uint8_t tx_buffer[MESSAGE_SIZE];
+	tx_buffer[0] = SET_ACCELERATION;
+	tx_buffer[1] = channel;
+	tx_buffer[2] = acceleration & 0x7F;
+	tx_buffer[3] = (acceleration >> 7) & 0x7F;
+	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, HAL_MAX_DELAY);
 }
 
-void Pointing(uint8_t *tx_buffer){
-    Set_Target(tx_buffer, CHANNEL_0, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-  	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
+void set_all_motor_acceleration(uint32_t acceleration){
+
+	set_motor_acceleration(THUMB_FINGER, acceleration);
+	set_motor_acceleration(LITTLE_FINGER, acceleration);
+	set_motor_acceleration(RING_FINGER, acceleration);
+	set_motor_acceleration(MIDDLE_FINGER, acceleration);
+	set_motor_acceleration(INDEX_FINGER, acceleration);
+	set_motor_acceleration(WRIST, acceleration);
 }
 
-void Good_sign(uint8_t *tx_buffer){
-    Set_Target(tx_buffer, CHANNEL_1, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
+void set_hand_position(const uint32_t position){
+
+	switch(position){
+		case POINTING:
+			set_motor_position(THUMB_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(RING_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_OPEN_POSITION);
+			break;
+		case FIST:
+			set_motor_position(THUMB_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(RING_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_CLOSE_POSITION);
+				break;
+		case ROCK:
+			set_motor_position(THUMB_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(RING_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_OPEN_POSITION);
+				break;
+		case FUCK:
+			set_motor_position(THUMB_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(RING_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_CLOSE_POSITION);
+				break;
+		case THUMB:
+			set_motor_position(THUMB_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(RING_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_CLOSE_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_CLOSE_POSITION);
+				break;
+		case OPEN:
+			set_motor_position(THUMB_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(LITTLE_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(RING_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(MIDDLE_FINGER, FINGER_OPEN_POSITION);
+			set_motor_position(INDEX_FINGER, FINGER_OPEN_POSITION);
+				break;
+		default:
+			break;
+	}
 }
-void Release(uint8_t *tx_buffer){
-	Set_Target(tx_buffer, CHANNEL_0, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-    Set_Target(tx_buffer, CHANNEL_1, TARGET_MIN_LOW, TARGET_MIN_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_2, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-//	Set_Target(tx_buffer, CHANNEL_3, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-//	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-	Set_Target(tx_buffer, CHANNEL_4, TARGET_MAX_LOW, TARGET_MAX_HIGH);
-	HAL_UART_Transmit(&huart6, (uint8_t*)tx_buffer, 4, 100);
-}
+
 
 

@@ -46,8 +46,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- ../Drivers/EMGDriver/../MotorDriver/MotorDriver.h \
- ../Drivers/EMGDriver/../EMGDriver/EMGDriver.h ../Core/Inc/task_init.h
+ ../Drivers/PCListener/../MotorDriver/MotorDriver.h \
+ ../Drivers/PCListener/../EMGDriver/EMGDriver.h ../Core/Inc/task_init.h \
+ ../Drivers/PCListener/PCListener.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -96,6 +97,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
-../Drivers/EMGDriver/../MotorDriver/MotorDriver.h:
-../Drivers/EMGDriver/../EMGDriver/EMGDriver.h:
+../Drivers/PCListener/../MotorDriver/MotorDriver.h:
+../Drivers/PCListener/../EMGDriver/EMGDriver.h:
 ../Core/Inc/task_init.h:
+../Drivers/PCListener/PCListener.h:

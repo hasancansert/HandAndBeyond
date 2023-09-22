@@ -1,4 +1,4 @@
 ../Drivers/EMGDriver/EMGDriver.c:16:6:EmgConfigInit	1
 ../Drivers/EMGDriver/EMGDriver.c:78:6:EmgTaskFunction	6
-../Drivers/EMGDriver/EMGDriver.c:136:6:EmgTaskInit	1
-../Drivers/EMGDriver/EMGDriver.c:146:6:EmgNotchFilter	1
+../Drivers/EMGDriver/EMGDriver.c:137:6:EmgTaskInit	1
+../Drivers/EMGDriver/EMGDriver.c:148:6:EmgNotchFilter	1

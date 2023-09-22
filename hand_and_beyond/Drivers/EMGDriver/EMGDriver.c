@@ -110,6 +110,7 @@ void EmgTaskFunction(void * argument)
 		  EmgNotchFilter(raw, emg);
 
 		  curr_avg = abs(emg[count%100])*alpha + prev_avg*prev_alpha;  //Calculate the current average.
+
 		  prev_avg=curr_avg;
 
 //		  printf("filtered = %d\n",emg[count%100]);
@@ -143,8 +144,43 @@ void EmgTaskInit(void)
 					tskIDLE_PRIORITY,
 	  				emgTaskHandle );
 }
+
 void EmgNotchFilter(int16_t *raw, int16_t *emg)
 {
 	emg[count%100] = round(raw[count%100]*Filter_Config.num[0] + raw[(count-1)%100]*Filter_Config.num[1] + raw[(count-2)%100]*Filter_Config.num[2] - emg[(count-1)%100]*Filter_Config.den[1] - emg[(count-2)%100]*Filter_Config.den[2]);
 
 }
+
+//void ADC_Task(void *pvParameters) {
+//    uint8_t channel = 0; // Initialize with the first channel
+//
+//    while (1) {
+//        // Configure the multiplexer to select the current channel
+//        // Adjust this part according to your hardware setup
+//        // For example, if you're using GPIO pins to control the multiplexer, set them here
+//
+//
+//    	taskENTER_CRITICAL();
+//
+//        // Start the ADC conversion
+//        HAL_ADC_Start(&hadc1);
+//
+//        // Wait for the conversion to complete
+//        if (HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK) {
+//            // Read the ADC value and store it in the buffer
+//            adcValues[channel] = HAL_ADC_GetValue(&hadc1);
+//        }
+//
+//        // Stop the ADC conversion
+//        HAL_ADC_Stop(&hadc1);
+//
+//        taskEXIT_CRITICAL();
+//
+//        // Delay to achieve a 1 kHz sampling rate
+//        vTaskDelay(pdMS_TO_TICKS(1));
+//
+//        // Increment the channel and wrap around if needed
+//        channel = (channel + 1) % NUM_CHANNELS;
+//    }
+//}
+

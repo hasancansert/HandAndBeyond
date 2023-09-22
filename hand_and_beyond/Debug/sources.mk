@@ -36,6 +36,7 @@ Core/Src \
 Core/Startup \
 Drivers/EMGDriver \
 Drivers/MotorDriver \
+Drivers/PCListener \
 Drivers/STM32F4xx_HAL_Driver/Src \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
 Middlewares/Third_Party/FreeRTOS/Source \
