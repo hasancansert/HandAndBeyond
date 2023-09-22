@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move &apos;EMGDriver, MotorDriver&apos; to &apos;Src&apos;" description="Move 2 resources to &apos;Src&apos;" destination="Core/Src" element1="Drivers/EMGDriver" element2="Drivers/MotorDriver" flags="7" id="org.eclipse.ltk.core.refactoring.move.resources" resources="2" stamp="1693858138668" updateReferences="true"/>
+</session>

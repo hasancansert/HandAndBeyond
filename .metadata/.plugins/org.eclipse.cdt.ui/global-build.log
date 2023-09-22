@@ -1,0 +1,25 @@
+13:25:35 **** Incremental Build of configuration Debug for project hand_and_beyond ****
+make -j16 all 
+arm-none-eabi-gcc "../Drivers/PCListener/PCListener.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/PCListener -I../Drivers/EMGDriver -I../Drivers/MotorDriver -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/PCListener/PCListener.d" -MT"Drivers/PCListener/PCListener.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/PCListener/PCListener.o"
+../Drivers/PCListener/PCListener.c: In function 'UARTReceiveTaskInit':
+../Drivers/PCListener/PCListener.c:85:35: warning: initialization of 'TaskFunction_t' {aka 'void (*)(void *)'} from incompatible pointer type 'void (*)(const void *)' [-Wincompatible-pointer-types]
+   85 |         TaskFunction_t UARTTask = UARTReceiveTask;
+      |                                   ^~~~~~~~~~~~~~~
+arm-none-eabi-g++ -o "hand_and_beyond.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Workspace\STM32CubeIDE\workspace_1.13.1\hand_and_beyond\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="hand_and_beyond.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: hand_and_beyond.elf
+ 
+arm-none-eabi-size   hand_and_beyond.elf 
+arm-none-eabi-objdump -h -S  hand_and_beyond.elf  > "hand_and_beyond.list"
+   text	   data	    bss	    dec	    hex	filename
+  37484	    128	  18976	  56588	   dd0c	hand_and_beyond.elf
+Finished building: default.size.stdout
+ 
+Finished building: hand_and_beyond.list
+ 
+13:25:39 **** Incremental Build of configuration Debug for project hand_and_beyond ****
+make -j16 all 
+arm-none-eabi-size   hand_and_beyond.elf 
+   text	   data	    bss	    dec	    hex	filename
+  37484	    128	  18976	  56588	   dd0c	hand_and_beyond.elf
+Finished building: default.size.stdout
+ 
